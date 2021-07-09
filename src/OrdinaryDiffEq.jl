@@ -255,5 +255,5 @@ using DocStringExtensions
 
   export ShampineCollocationInit, BrownFullBasicInit, NoInit
 
-  export IController, PIController, PIDController
+  export IController, NController, PIController, PIDController
 end # module
