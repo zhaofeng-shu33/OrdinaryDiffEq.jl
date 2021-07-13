@@ -362,8 +362,11 @@ struct Ralston <: OrdinaryDiffEqAdaptiveAlgorithm end
 Midpoint: Explicit Runge-Kutta Method
   The second order midpoint method. Uses embedded Euler method for adaptivity.
 """
-struct Midpoint <: OrdinaryDiffEqAdaptiveAlgorithm end
-
+struct Midpoint{T} <: OrdinaryDiffEqAdaptiveAlgorithm
+  coefficient::T
+  order::T
+end
+Midpoint() = Midpoint(1.0, 3.0)
 """
 @article{shampine2005solving,
   title={Solving ODEs and DDEs with residual control},
@@ -380,7 +383,13 @@ RK4: Explicit Runge-Kutta Method
   The canonical Runge-Kutta Order 4 method.
   Uses a defect control for adaptive stepping using maximum error over the whole interval.
 """
-struct RK4 <: OrdinaryDiffEqAdaptiveAlgorithm end
+# struct RK4 <: OrdinaryDiffEqAdaptiveAlgorithm end
+struct RK4{T} <: OrdinaryDiffEqAdaptiveAlgorithm
+  coefficient::T
+  order::T
+end
+RK4() = RK4(1.0, 5.0)
+
 struct RKM <: OrdinaryDiffEqAlgorithm end
 """
 Anas5: Explicit Runge-Kutta Method
@@ -1092,7 +1101,11 @@ struct OwrenZen5 <: OrdinaryDiffEqAdaptiveAlgorithm end
 BS3: Explicit Runge-Kutta Method
   Bogacki-Shampine 3/2 method.
 """
-struct BS3 <: OrdinaryDiffEqAdaptiveAlgorithm end
+struct BS3{T} <: OrdinaryDiffEqAdaptiveAlgorithm
+  coefficient::T
+  order::T
+end
+BS3() = BS3(1.0, 4.0)
 
 """
 @article{dormand1980family,
