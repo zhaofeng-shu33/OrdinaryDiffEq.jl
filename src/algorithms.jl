@@ -384,11 +384,7 @@ RK4: Explicit Runge-Kutta Method
   Uses a defect control for adaptive stepping using maximum error over the whole interval.
 """
 # struct RK4 <: OrdinaryDiffEqAdaptiveAlgorithm end
-struct RK4{T} <: OrdinaryDiffEqAdaptiveAlgorithm
-  coefficient::T
-  order::T
-end
-RK4() = RK4(1.0, 5.0)
+struct RK4{T} <: OrdinaryDiffEqAdaptiveAlgorithm end
 
 struct RKM <: OrdinaryDiffEqAlgorithm end
 """

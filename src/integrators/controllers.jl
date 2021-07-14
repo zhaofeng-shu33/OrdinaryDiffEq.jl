@@ -80,7 +80,8 @@ end
   if iszero(EEst)
     q = inv(qmax)
   else
-    expo = 0.5 * ( 1 + 1 / EEst)
+    expo = 1 / (get_current_adaptive_order(alg, integrator.cache) + 1)
+    expo = 1 - expo + (expo / EEst)
     qtmp = 1 / (expo * gamma)
     @fastmath q = DiffEqBase.value(max(inv(qmax), min(inv(qmin), qtmp)))
     # TODO: Shouldn't this be in `step_accept_controller!` as for the PI controller?
