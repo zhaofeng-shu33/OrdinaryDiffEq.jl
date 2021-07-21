@@ -44,6 +44,8 @@ end
 
 struct ExplicitRK{TabType} <: OrdinaryDiffEqAdaptiveAlgorithm
   tableau::TabType
+  coefficient::Float64
+  order::Float64
 end
 ExplicitRK(;tableau=ODE_DEFAULT_TABLEAU) = ExplicitRK(tableau)
 
