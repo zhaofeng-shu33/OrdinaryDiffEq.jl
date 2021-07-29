@@ -47,7 +47,7 @@ struct ExplicitRK{TabType} <: OrdinaryDiffEqAdaptiveAlgorithm
   coefficient::Float64
   order::Float64
 end
-ExplicitRK(;tableau=ODE_DEFAULT_TABLEAU) = ExplicitRK(tableau)
+ExplicitRK(;tableau=ODE_DEFAULT_TABLEAU) = ExplicitRK(tableau, 1.0, 1.0)
 
 @inline trivial_limiter!(u, integrator, p, t) = nothing
 """
