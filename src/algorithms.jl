@@ -1109,7 +1109,10 @@ struct BS3 <: OrdinaryDiffEqAdaptiveAlgorithm end
 DP5: Explicit Runge-Kutta Method
   Dormand-Prince's 5/4 Runge-Kutta method. (free 4th order interpolant).
 """
-struct DP5 <: OrdinaryDiffEqAdaptiveAlgorithm end
+struct DP5{T} <: OrdinaryDiffEqAdaptiveAlgorithm
+  coefficient::T
+  order::T
+end
 
 """
 @article{tsitouras2011runge,
