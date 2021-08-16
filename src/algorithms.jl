@@ -1124,7 +1124,7 @@ struct DP5{T} <: OrdinaryDiffEqAdaptiveAlgorithm
   coefficient::T
   order::T
 end
-
+DP5() = DP5(1.0, 5.0)
 """
 @article{tsitouras2011runge,
   title={Runge--Kutta pairs of order 5 (4) satisfying only the first column simplifying assumption},
