@@ -44,8 +44,10 @@ end
 
 struct ExplicitRK{TabType} <: OrdinaryDiffEqAdaptiveAlgorithm
   tableau::TabType
+  coefficient::Float64
+  order::Float64
 end
-ExplicitRK(;tableau=ODE_DEFAULT_TABLEAU) = ExplicitRK(tableau)
+ExplicitRK(;tableau=ODE_DEFAULT_TABLEAU) = ExplicitRK(tableau, 1.0, 1.0)
 
 @inline trivial_limiter!(u, integrator, p, t) = nothing
 """
@@ -362,8 +364,11 @@ struct Ralston <: OrdinaryDiffEqAdaptiveAlgorithm end
 Midpoint: Explicit Runge-Kutta Method
   The second order midpoint method. Uses embedded Euler method for adaptivity.
 """
-struct Midpoint <: OrdinaryDiffEqAdaptiveAlgorithm end
-
+struct Midpoint{T} <: OrdinaryDiffEqAdaptiveAlgorithm
+  coefficient::T
+  order::T
+end
+Midpoint() = Midpoint(1.0, 3.0)
 """
 @article{shampine2005solving,
   title={Solving ODEs and DDEs with residual control},
@@ -380,7 +385,9 @@ RK4: Explicit Runge-Kutta Method
   The canonical Runge-Kutta Order 4 method.
   Uses a defect control for adaptive stepping using maximum error over the whole interval.
 """
-struct RK4 <: OrdinaryDiffEqAdaptiveAlgorithm end
+# struct RK4 <: OrdinaryDiffEqAdaptiveAlgorithm end
+struct RK4{T} <: OrdinaryDiffEqAdaptiveAlgorithm end
+
 struct RKM <: OrdinaryDiffEqAlgorithm end
 """
 Anas5: Explicit Runge-Kutta Method
@@ -1092,7 +1099,11 @@ struct OwrenZen5 <: OrdinaryDiffEqAdaptiveAlgorithm end
 BS3: Explicit Runge-Kutta Method
   Bogacki-Shampine 3/2 method.
 """
-struct BS3 <: OrdinaryDiffEqAdaptiveAlgorithm end
+struct BS3{T} <: OrdinaryDiffEqAdaptiveAlgorithm
+  coefficient::T
+  order::T
+end
+BS3() = BS3(1.0, 4.0)
 
 """
 @article{dormand1980family,
@@ -1109,8 +1120,11 @@ struct BS3 <: OrdinaryDiffEqAdaptiveAlgorithm end
 DP5: Explicit Runge-Kutta Method
   Dormand-Prince's 5/4 Runge-Kutta method. (free 4th order interpolant).
 """
-struct DP5 <: OrdinaryDiffEqAdaptiveAlgorithm end
-
+struct DP5{T} <: OrdinaryDiffEqAdaptiveAlgorithm
+  coefficient::T
+  order::T
+end
+DP5() = DP5(1.0, 5.0)
 """
 @article{tsitouras2011runge,
   title={Runge--Kutta pairs of order 5 (4) satisfying only the first column simplifying assumption},

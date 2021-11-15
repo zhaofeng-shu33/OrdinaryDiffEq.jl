@@ -96,7 +96,12 @@ function DiffEqBase.__init(prob::Union{DiffEqBase.AbstractODEProblem,DiffEqBase.
   t = tspan[1]
 
   if (((!(typeof(alg) <: OrdinaryDiffEqAdaptiveAlgorithm) && !(typeof(alg) <: OrdinaryDiffEqCompositeAlgorithm) && !(typeof(alg) <: DAEAlgorithm)) || !adaptive) && dt == tType(0) && isempty(tstops)) && !(typeof(alg) <: Union{FunctionMap,LinearExponential})
+    if (!(typeof(alg) <: OrdinaryDiffEqAdaptiveAlgorithm) || !hasproperty(alg, :coefficient) || !hasproperty(alg, :order))
       error("Fixed timestep methods require a choice of dt or choosing the tstops")
+    else
+      # set the dt based on the formula abs = C * h^(q+1)
+      dt = (abstol / alg.coefficient) ^ (1 / alg.order)
+    end
   end
 
   isdae = alg isa DAEAlgorithm || (!(typeof(prob)<:DiscreteProblem) &&

@@ -54,6 +54,9 @@ the predicted step size.
 struct IController <: AbstractController
 end
 
+struct NController <: AbstractController
+end
+
 @inline function stepsize_controller!(integrator, controller::IController, alg)
   @unpack qmin, qmax, gamma = integrator.opts
   EEst = DiffEqBase.value(integrator.EEst)
@@ -62,7 +65,24 @@ end
     q = inv(qmax)
   else
     expo = 1 / (get_current_adaptive_order(alg, integrator.cache) + 1)
-    qtmp = DiffEqBase.fastpow(EEst, expo) / gamma
+    qtmp = EEst ^ expo / gamma
+    @fastmath q = DiffEqBase.value(max(inv(qmax), min(inv(qmin), qtmp)))
+    # TODO: Shouldn't this be in `step_accept_controller!` as for the PI controller?
+    integrator.qold = DiffEqBase.value(integrator.dt) / q
+  end
+  q
+end
+
+@inline function stepsize_controller!(integrator, controller::NController, alg)
+  @unpack qmin, qmax, gamma = integrator.opts
+  EEst = DiffEqBase.value(integrator.EEst)
+
+  if iszero(EEst)
+    q = inv(qmax)
+  else
+    expo = 1 / (get_current_adaptive_order(alg, integrator.cache) + 1)
+    expo = 1 - expo + (expo / EEst)
+    qtmp = 1 / (expo * gamma)
     @fastmath q = DiffEqBase.value(max(inv(qmax), min(inv(qmin), qtmp)))
     # TODO: Shouldn't this be in `step_accept_controller!` as for the PI controller?
     integrator.qold = DiffEqBase.value(integrator.dt) / q
@@ -84,6 +104,19 @@ function step_reject_controller!(integrator, controller::IController, alg)
   integrator.dt = qold
 end
 
+function step_accept_controller!(integrator, controller::NController, alg, q)
+  @unpack qsteady_min, qsteady_max = integrator.opts
+  
+  if qsteady_min <= q <= qsteady_max
+      q = one(q)
+  end
+  integrator.dt / q # new dt
+  end
+  
+function step_reject_controller!(integrator, controller::NController, alg)
+  @unpack qold = integrator
+  integrator.dt = qold
+end
 
 # PI step size controller
 """
@@ -132,8 +165,8 @@ end
   if iszero(EEst)
     q = inv(qmax)
   else
-    q11 = DiffEqBase.fastpow(EEst, float(beta1))
-    q = q11 / DiffEqBase.fastpow(qold, float(beta2))
+    q11 = EEst ^ float(beta1)
+    q = q11 / qold ^ float(beta2)
     integrator.q11 = q11
     @fastmath q = max(inv(qmax), min(inv(qmin), q / gamma))
   end
