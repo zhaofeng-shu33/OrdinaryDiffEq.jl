@@ -65,7 +65,7 @@ end
     q = inv(qmax)
   else
     expo = 1 / (get_current_adaptive_order(alg, integrator.cache) + 1)
-    qtmp = DiffEqBase.fastpow(EEst, expo) / gamma
+    qtmp = EEst ^ expo / gamma
     @fastmath q = DiffEqBase.value(max(inv(qmax), min(inv(qmin), qtmp)))
     # TODO: Shouldn't this be in `step_accept_controller!` as for the PI controller?
     integrator.qold = DiffEqBase.value(integrator.dt) / q
