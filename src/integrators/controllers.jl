@@ -165,8 +165,8 @@ end
   if iszero(EEst)
     q = inv(qmax)
   else
-    q11 = DiffEqBase.fastpow(EEst, float(beta1))
-    q = q11 / DiffEqBase.fastpow(qold, float(beta2))
+    q11 = EEst ^ float(beta1)
+    q = q11 / qold ^ float(beta2)
     integrator.q11 = q11
     @fastmath q = max(inv(qmax), min(inv(qmin), q / gamma))
   end
